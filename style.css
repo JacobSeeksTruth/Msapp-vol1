@@ -268,6 +268,33 @@ button:hover {
     opacity: 0.92;
 }
 
+/* Download Study Guide Button */
+.btn-download {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white !important;
+    border: none;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 4px;
+    font-family: inherit;
+}
+
+.btn-download:hover {
+    opacity: 0.92;
+}
+
+.btn-download:active {
+    transform: scale(0.98);
+}
+
 /* Game Controls */
 .control-buttons {
     display: grid;
@@ -308,6 +335,14 @@ button:hover {
     margin-top: 4px;
 }
 
+.hint-text {
+    font-weight: 500;
+    font-size: 12px;
+    color: #94a3b8;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
 /* Word Areas */
 .word-pool,
 .drop-zone {
@@ -316,15 +351,20 @@ button:hover {
     gap: 8px;
     padding: 12px;
     min-height: 110px;
-    background: var(--light-bg);
-    border: 2px dashed #cbd5e1;
     border-radius: 12px;
     align-content: flex-start;
 }
 
+/* Your Verse (lighter) */
 .drop-zone {
     border: 2px solid #cbd5e1;
     background: #ffffff;
+}
+
+/* Scrambled Word Pieces (slightly darker for contrast) */
+.word-pool {
+    background: #e8eef4;
+    border: 2px dashed #94a3b8;
 }
 
 /* Word Pieces - Large touch targets */
@@ -338,7 +378,7 @@ button:hover {
     font-weight: 500;
     font-size: 16px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.1s, box-shadow 0.15s;
+    transition: transform 0.1s, box-shadow 0.15s, outline 0.15s, background 0.15s;
     min-height: 44px;
     display: flex;
     align-items: center;
@@ -347,6 +387,56 @@ button:hover {
 
 .word-piece:active {
     transform: scale(0.94);
+}
+
+/* Highlighted card when chosen as insert target */
+.word-piece.insert-target {
+    outline: 3px solid #0ea5e9;
+    background: #e0f2fe !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+    transform: scale(1.03);
+}
+
+/* Insert controls bar */
+.insert-controls {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.insert-controls.hidden {
+    display: none !important;
+}
+
+.insert-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0369a1;
+}
+
+.insert-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+}
+
+.btn-insert {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+    color: white !important;
+    padding: 10px 8px !important;
+    font-size: 14px !important;
+}
+
+.btn-cancel-insert {
+    background: #e2e8f0 !important;
+    color: #334155 !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
 }
 
 /* Success Message */
@@ -514,6 +604,14 @@ button:hover {
     .modal-content {
         padding: 20px 16px;
     }
+
+    .insert-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .btn-cancel-insert {
+        grid-column: 1 / -1;
+    }
 }
 
 /* Very small phones */
@@ -530,101 +628,4 @@ button:hover {
     #versionSelect {
         width: 100%;
     }
-}
-/* Darker Scrambled pool for better contrast */
-.word-pool {
-    background: #e8eef4;           /* slightly darker */
-    border: 2px dashed #94a3b8;
-}
-
-/* Your Verse stays lighter */
-.drop-zone {
-    background: #ffffff;
-    border: 2px solid #cbd5e1;
-}
-
-/* Hint text under titles */
-.hint-text {
-    font-weight: 500;
-    font-size: 12px;
-    color: #94a3b8;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-/* Insert controls bar */
-.insert-controls {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.insert-controls.hidden {
-    display: none !important;
-}
-
-.insert-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0369a1;
-}
-
-.insert-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 8px;
-}
-
-.btn-insert {
-    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
-    color: white !important;
-    padding: 10px 8px !important;
-    font-size: 14px !important;
-}
-
-.btn-cancel-insert {
-    background: #e2e8f0 !important;
-    color: #334155 !important;
-    padding: 10px 12px !important;
-    font-size: 14px !important;
-}
-
-/* Highlighted card when chosen as insert target */
-.word-piece.insert-target {
-    outline: 3px solid #0ea5e9;
-    background: #e0f2fe !important;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
-    transform: scale(1.03);
-}
-
-/* Download Study Guide button */
-.btn-download {
-    display: block;
-    width: 100%;
-    text-align: center;
-    background: linear-gradient(135deg, #059669, #10b981);
-    color: white !important;
-    border: none;
-    padding: 14px 16px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    margin-top: 4px;
-    font-family: inherit;
-}
-
-.btn-download:hover {
-    opacity: 0.92;
-}
-
-.btn-download:active {
-    transform: scale(0.98);
 }
