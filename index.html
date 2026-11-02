@@ -17,8 +17,9 @@
                 <label for="versionSelect"><strong>Bible Translation:</strong></label>
                 <select id="versionSelect">
                     <option value="ESV" selected>ESV (English Standard Version)</option>
-                    <option value="NIV">NIV (New International Version)</option>
                     <option value="KJV">KJV (King James Version)</option>
+                    <option value="NIV">NIV (New International Version)</option>
+                    <option value="NKJV">NKJV (New King James Version)</option>
                     <option value="NLT">NLT (New Living Translation)</option>
                 </select>
             </div>
@@ -38,6 +39,11 @@
             <input type="text" id="referenceInput" placeholder="e.g., John 3:16">
             
             <button id="generateBtn">Start Custom Puzzle</button>
+            
+            <!-- New Download Button -->
+            <a id="downloadGuideBtn" class="btn-download" href="#" target="_blank" rel="noopener">
+                Download Full Study Guide
+            </a>
         </div>
 
         <!-- GAME VIEW -->
@@ -49,10 +55,21 @@
                 <button class="btn-main-menu" id="newVerseBtn">🔄 Main Menu</button>
             </div>
             
-            <div class="drop-title">Your Verse (Tap cards to remove):</div>
+            <div class="drop-title">Your Verse <span class="hint-text">(Tap to remove • Hold a card to insert before/after)</span></div>
+            
+            <!-- Insert controls (shown only when a card is long-pressed) -->
+            <div id="insertControls" class="insert-controls hidden">
+                <span class="insert-label">Insert relative to highlighted card:</span>
+                <div class="insert-buttons">
+                    <button id="insertBeforeBtn" class="btn-insert">Insert Before</button>
+                    <button id="insertAfterBtn" class="btn-insert">Insert After</button>
+                    <button id="cancelInsertBtn" class="btn-cancel-insert">Cancel</button>
+                </div>
+            </div>
+            
             <div id="dropZone" class="drop-zone"></div>
 
-            <div class="pool-title">Scrambled Word Pieces (Tap cards to pick):</div>
+            <div class="pool-title">Scrambled Word Pieces <span class="hint-text">(Tap cards to pick)</span></div>
             <div id="wordPool" class="word-pool"></div>
             
             <div id="successBlock" class="success-message hidden">
