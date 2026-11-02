@@ -6,6 +6,7 @@ const curriculumVerses = [
             ESV: "In the beginning, God created the heavens and the earth.",
             NIV: "In the beginning God created the heavens and the earth.",
             KJV: "In the beginning God created the heaven and the earth.",
+            NKJV: "In the beginning God created the heavens and the earth.",
             NLT: "In the beginning God created the heavens and the earth."
         }
     },
@@ -16,6 +17,7 @@ const curriculumVerses = [
             ESV: "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.",
             NIV: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
             KJV: "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+            NKJV: "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
             NLT: "For this is how God loved the world: He gave his one and only Son, so that everyone who believes in him will not perish but have eternal life."
         }
     },
@@ -26,6 +28,7 @@ const curriculumVerses = [
             ESV: "Trust in the LORD with all your heart, and do not lean on your own understanding.",
             NIV: "Trust in the LORD with all your heart and lean not on your own understanding;",
             KJV: "Trust in the LORD with all thine heart; and lean not unto thine own understanding.",
+            NKJV: "Trust in the Lord with all your heart, And lean not on your own understanding;",
             NLT: "Trust in the LORD with all your heart; do not depend on your own understanding."
         }
     },
@@ -36,6 +39,7 @@ const curriculumVerses = [
             ESV: "for all have sinned and fall short of the glory of God,",
             NIV: "for all have sinned and fall short of the glory of God,",
             KJV: "For all have sinned, and come short of the glory of God;",
+            NKJV: "for all have sinned and fall short of the glory of God,",
             NLT: "For everyone has sinned; we all fall short of God's glorious standard."
         }
     },
@@ -46,6 +50,7 @@ const curriculumVerses = [
             ESV: "For the wages of sin is death, but the free gift of God is eternal life in Christ Jesus our Lord.",
             NIV: "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
             KJV: "For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.",
+            NKJV: "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
             NLT: "For the wages of sin is death, but the free gift of God is eternal life through Christ Jesus our Lord."
         }
     },
@@ -56,6 +61,7 @@ const curriculumVerses = [
             ESV: "I can do all things through him who strengthens me.",
             NIV: "I can do all this through him who gives me strength.",
             KJV: "I can do all things through Christ which strengtheneth me.",
+            NKJV: "I can do all things through Christ who strengthens me.",
             NLT: "For I can do everything through Christ, who gives me strength."
         }
     },
@@ -66,6 +72,7 @@ const curriculumVerses = [
             ESV: "The LORD is my shepherd; I shall not want.",
             NIV: "The LORD is my shepherd, I lack nothing.",
             KJV: "The LORD is my shepherd; I shall not want.",
+            NKJV: "The Lord is my shepherd; I shall not want.",
             NLT: "The LORD is my shepherd; I have all that I need."
         }
     },
@@ -76,6 +83,7 @@ const curriculumVerses = [
             ESV: "And we know that for those who love God all things work together for good, for those who are called according to his purpose.",
             NIV: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",
             KJV: "And we know that all things work together for good to them that love God, to them who are the called according to his purpose.",
+            NKJV: "And we know that all things work together for good to those who love God, to those who are the called according to His purpose.",
             NLT: "And we know that God causes everything to work together for the good of those who love God and are called according to his purpose for them."
         }
     },
@@ -86,6 +94,7 @@ const curriculumVerses = [
             ESV: "Have I not commanded you? Be strong and courageous. Do not be afraid, and do not be dismayed, for the LORD your God is with you wherever you go.",
             NIV: "Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.",
             KJV: "Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.",
+            NKJV: "Have I not commanded you? Be strong and of good courage; do not be afraid, nor be dismayed, for the Lord your God is with you wherever you go.",
             NLT: "This is my command—be strong and courageous! Do not be afraid or discouraged. For the LORD your God is with you wherever you go."
         }
     },
@@ -96,6 +105,7 @@ const curriculumVerses = [
             ESV: "But seek first the kingdom of God and his righteousness, and all these things will be given to you as well.",
             NIV: "But seek first his kingdom and his righteousness, and all these things will be given to you as well.",
             KJV: "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.",
+            NKJV: "But seek first the kingdom of God and His righteousness, and all these things shall be added to you.",
             NLT: "Seek the Kingdom of God above all else, and live righteously, and he will give you everything you need."
         }
     }
@@ -105,8 +115,12 @@ let originalWordsArray = [];
 let currentVerseText = "";
 let currentReference = "";
 let currentActiveId = null;
-
 let masteredVerses = JSON.parse(localStorage.getItem('masteredScriptures')) || [];
+
+// Insert feature state
+let insertTarget = null;      // the highlighted element in dropZone
+let insertPosition = null;    // 'before' or 'after'
+let longPressTimer = null;
 
 function getSelectedTranslation() {
     const selector = document.getElementById('versionSelect');
@@ -156,11 +170,18 @@ function startCurriculumVerse(verseObj) {
     initGame();
 }
 
-function cleanWord(str) {
-    return str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"’']/g, "").toLowerCase().trim();
+function clearInsertMode() {
+    if (insertTarget) {
+        insertTarget.classList.remove('insert-target');
+    }
+    insertTarget = null;
+    insertPosition = null;
+    document.getElementById('insertControls').classList.add('hidden');
 }
 
 function initGame() {
+    clearInsertMode();
+    
     currentVerseText = document.getElementById('verseInput').value.trim();
     currentReference = document.getElementById('referenceInput').value.trim();
     
@@ -184,29 +205,15 @@ function initGame() {
     document.getElementById('successBlock').classList.add('hidden');
     document.getElementById('gameControls').classList.remove('hidden');
 
-    // Create indexed array and shuffle
+    // Shuffle
     let indexedWords = originalWordsArray.map((word, index) => ({ word, index }));
-    
     for (let i = indexedWords.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [indexedWords[i], indexedWords[j]] = [indexedWords[j], indexedWords[i]];
     }
 
     indexedWords.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'word-piece';
-        el.innerText = item.word;
-        el.dataset.originalIndex = item.index; // optional, for future features
-        
-        el.onclick = () => {
-            if (el.parentElement.id === 'wordPool') {
-                dropZone.appendChild(el);
-            } else {
-                wordPool.appendChild(el);
-            }
-            checkWinState();
-        };
-        
+        const el = createWordPiece(item.word);
         wordPool.appendChild(el);
     });
 
@@ -214,54 +221,125 @@ function initGame() {
     document.getElementById('gameView').classList.remove('hidden');
 }
 
+function createWordPiece(word) {
+    const el = document.createElement('div');
+    el.className = 'word-piece';
+    el.innerText = word;
+
+    // Normal click / tap
+    el.addEventListener('click', (e) => {
+        // If we are in insert mode and this piece is in the pool
+        if (insertTarget && insertPosition && el.parentElement.id === 'wordPool') {
+            e.stopPropagation();
+            performInsert(el);
+            return;
+        }
+
+        // Normal move between zones
+        if (el.parentElement.id === 'wordPool') {
+            document.getElementById('dropZone').appendChild(el);
+        } else {
+            // Only allow remove if not currently the insert target
+            if (el !== insertTarget) {
+                document.getElementById('wordPool').appendChild(el);
+            }
+        }
+        checkWinState();
+    });
+
+    // Long-press detection (for pieces already in dropZone)
+    el.addEventListener('touchstart', startLongPress, {passive: true});
+    el.addEventListener('mousedown', startLongPress);
+    el.addEventListener('touchend', cancelLongPress);
+    el.addEventListener('mouseup', cancelLongPress);
+    el.addEventListener('mouseleave', cancelLongPress);
+    el.addEventListener('touchmove', cancelLongPress);
+
+    function startLongPress(e) {
+        // Only allow long-press on pieces that are already in the drop zone
+        if (el.parentElement.id !== 'dropZone') return;
+        
+        cancelLongPress();
+        longPressTimer = setTimeout(() => {
+            // Enter insert mode
+            clearInsertMode();
+            insertTarget = el;
+            el.classList.add('insert-target');
+            document.getElementById('insertControls').classList.remove('hidden');
+            
+            // Optional haptic feedback
+            if (navigator.vibrate) navigator.vibrate(40);
+        }, 600);
+    }
+
+    function cancelLongPress() {
+        if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+        }
+    }
+
+    return el;
+}
+
+function performInsert(poolPiece) {
+    if (!insertTarget || !insertPosition) return;
+
+    const dropZone = document.getElementById('dropZone');
+
+    if (insertPosition === 'before') {
+        dropZone.insertBefore(poolPiece, insertTarget);
+    } else {
+        // after
+        if (insertTarget.nextSibling) {
+            dropZone.insertBefore(poolPiece, insertTarget.nextSibling);
+        } else {
+            dropZone.appendChild(poolPiece);
+        }
+    }
+
+    clearInsertMode();
+    checkWinState();
+}
+
 function toggleHint(show) {
     const modal = document.getElementById('hintModal');
-    if (show) {
-        modal.classList.add('open');
-    } else {
-        modal.classList.remove('open');
-    }
+    if (show) modal.classList.add('open');
+    else modal.classList.remove('open');
 }
 
 function toggleRewardModal(show) {
     const modal = document.getElementById('rewardModal');
-    if (show) {
-        modal.classList.add('open');
-    } else {
-        modal.classList.remove('open');
-    }
+    if (show) modal.classList.add('open');
+    else modal.classList.remove('open');
 }
 
 function checkWinState() {
     const dropZone = document.getElementById('dropZone');
     const placedWords = Array.from(dropZone.children).map(el => el.innerText);
 
-    // Must have all words placed
-    if (placedWords.length !== originalWordsArray.length) {
-        return;
-    }
+    if (placedWords.length !== originalWordsArray.length) return;
 
-    // Exact match (order + spelling + punctuation)
     const isCorrect = placedWords.every((word, index) => word === originalWordsArray[index]);
 
     if (isCorrect) {
-        // Mark as mastered if it was a curriculum verse
         if (currentActiveId !== null && !masteredVerses.includes(currentActiveId)) {
             masteredVerses.push(currentActiveId);
             localStorage.setItem('masteredScriptures', JSON.stringify(masteredVerses));
         }
-
         document.getElementById('successBlock').classList.remove('hidden');
         document.getElementById('gameControls').classList.add('hidden');
+        clearInsertMode();
     }
 }
 
 function goToMainMenu() {
+    clearInsertMode();
     document.getElementById('gameView').classList.add('hidden');
     document.getElementById('setupView').classList.remove('hidden');
     document.getElementById('successBlock').classList.add('hidden');
     currentActiveId = null;
-    renderCurriculum(); // refresh mastered status
+    renderCurriculum();
 }
 
 function goToNextTrack() {
@@ -269,16 +347,13 @@ function goToNextTrack() {
         goToMainMenu();
         return;
     }
-
     const currentIndex = curriculumVerses.findIndex(v => v.id === currentActiveId);
     const nextIndex = currentIndex + 1;
 
     if (nextIndex < curriculumVerses.length) {
         startCurriculumVerse(curriculumVerses[nextIndex]);
     } else {
-        // Finished the last track
         goToMainMenu();
-        // Optionally open the reward if everything is done
         const allCompleted = curriculumVerses.every(v => masteredVerses.includes(v.id));
         if (allCompleted) {
             setTimeout(() => toggleRewardModal(true), 400);
@@ -288,71 +363,46 @@ function goToNextTrack() {
 
 // ========== EVENT LISTENERS ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial render
     renderCurriculum();
 
-    // Translation change → re-render list
-    const versionSelect = document.getElementById('versionSelect');
-    if (versionSelect) {
-        versionSelect.addEventListener('change', () => {
-            renderCurriculum();
-        });
-    }
+    document.getElementById('versionSelect')?.addEventListener('change', renderCurriculum);
 
-    // Custom puzzle button
-    const generateBtn = document.getElementById('generateBtn');
-    if (generateBtn) {
-        generateBtn.addEventListener('click', () => {
-            currentActiveId = null; // custom verse
-            initGame();
-        });
-    }
+    document.getElementById('generateBtn')?.addEventListener('click', () => {
+        currentActiveId = null;
+        initGame();
+    });
 
-    // Hint button
-    const showHintBtn = document.getElementById('showHintBtn');
-    if (showHintBtn) {
-        showHintBtn.addEventListener('click', () => toggleHint(true));
-    }
+    // Insert controls
+    document.getElementById('insertBeforeBtn')?.addEventListener('click', () => {
+        insertPosition = 'before';
+        // Optional: visual feedback that Before is selected
+        document.getElementById('insertBeforeBtn').style.outline = '2px solid #0369a1';
+        document.getElementById('insertAfterBtn').style.outline = 'none';
+    });
 
-    // Close hint by clicking the text or the close button
-    const hintText = document.getElementById('hintText');
-    if (hintText) {
-        hintText.addEventListener('click', () => toggleHint(false));
-    }
+    document.getElementById('insertAfterBtn')?.addEventListener('click', () => {
+        insertPosition = 'after';
+        document.getElementById('insertAfterBtn').style.outline = '2px solid #0369a1';
+        document.getElementById('insertBeforeBtn').style.outline = 'none';
+    });
 
-    const closeHintBtn = document.getElementById('closeHintBtn');
-    if (closeHintBtn) {
-        closeHintBtn.addEventListener('click', () => toggleHint(false));
-    }
+    document.getElementById('cancelInsertBtn')?.addEventListener('click', clearInsertMode);
 
-    // Main Menu button
-    const newVerseBtn = document.getElementById('newVerseBtn');
-    if (newVerseBtn) {
-        newVerseBtn.addEventListener('click', goToMainMenu);
-    }
+    // Hint
+    document.getElementById('showHintBtn')?.addEventListener('click', () => toggleHint(true));
+    document.getElementById('closeHintBtn')?.addEventListener('click', () => toggleHint(false));
+    document.getElementById('hintText')?.addEventListener('click', () => toggleHint(false));
 
-    // Success buttons
-    const nextTrackBtn = document.getElementById('nextTrackBtn');
-    if (nextTrackBtn) {
-        nextTrackBtn.addEventListener('click', goToNextTrack);
-    }
+    // Navigation
+    document.getElementById('newVerseBtn')?.addEventListener('click', goToMainMenu);
+    document.getElementById('nextTrackBtn')?.addEventListener('click', goToNextTrack);
+    document.getElementById('backToDirBtn')?.addEventListener('click', goToMainMenu);
+    document.getElementById('closeRewardBtn')?.addEventListener('click', () => toggleRewardModal(false));
 
-    const backToDirBtn = document.getElementById('backToDirBtn');
-    if (backToDirBtn) {
-        backToDirBtn.addEventListener('click', goToMainMenu);
-    }
-
-    // Reward modal close
-    const closeRewardBtn = document.getElementById('closeRewardBtn');
-    if (closeRewardBtn) {
-        closeRewardBtn.addEventListener('click', () => toggleRewardModal(false));
-    }
-
-    // Close modals when clicking the dark background
+    // Close modals on background click
     document.getElementById('hintModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'hintModal') toggleHint(false);
     });
-
     document.getElementById('rewardModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'rewardModal') toggleRewardModal(false);
     });
