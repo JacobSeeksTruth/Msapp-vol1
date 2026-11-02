@@ -132,17 +132,18 @@ function renderCurriculum() {
 
     const rewardContainer = document.getElementById('rewardContainer');
     if (!rewardContainer) return;
+    
     const allCompleted = curriculumVerses.every(v => masteredVerses.includes(v.id));
     rewardContainer.innerHTML = "";
 
     const rewardBtn = document.createElement('div');
     if (allCompleted) {
         rewardBtn.className = "reward-item unlocked";
-        rewardBtn.innerText = "Devitional: Walking in the Love of God Through Faithful Obedience (Devotional Unlocked)";
+        rewardBtn.innerText = "Devotional: Walking in the Love of God Through Faithful Obedience (Unlocked)";
         rewardBtn.onclick = () => toggleRewardModal(true);
     } else {
         rewardBtn.className = "reward-item locked";
-        rewardBtn.innerText = "Devitional: Walking in the Love of God Through Faithful Obedience";
+        rewardBtn.innerText = "Devotional: Walking in the Love of God Through Faithful Obedience (Locked)";
     }
     rewardContainer.appendChild(rewardBtn);
 }
@@ -163,7 +164,10 @@ function initGame() {
     currentVerseText = document.getElementById('verseInput').value.trim();
     currentReference = document.getElementById('referenceInput').value.trim();
     
-    if (!currentVerseText) return alert("Please select or enter a verse first!");
+    if (!currentVerseText) {
+        alert("Please select or enter a verse first!");
+        return;
+    }
     if (!currentReference) currentReference = "Custom Verse";
 
     originalWordsArray = currentVerseText.split(/\s+/).filter(w => w.length > 0);
@@ -176,9 +180,11 @@ function initGame() {
     const dropZone = document.getElementById('dropZone');
     wordPool.innerHTML = "";
     dropZone.innerHTML = "";
+    
     document.getElementById('successBlock').classList.add('hidden');
     document.getElementById('gameControls').classList.remove('hidden');
 
+    // Create indexed array and shuffle
     let indexedWords = originalWordsArray.map((word, index) => ({ word, index }));
     
     for (let i = indexedWords.length - 1; i > 0; i--) {
@@ -190,6 +196,7 @@ function initGame() {
         const el = document.createElement('div');
         el.className = 'word-piece';
         el.innerText = item.word;
+        el.dataset.originalIndex = item.index; // optional, for future features
         
         el.onclick = () => {
             if (el.parentElement.id === 'wordPool') {
@@ -209,14 +216,144 @@ function initGame() {
 
 function toggleHint(show) {
     const modal = document.getElementById('hintModal');
-    if (show) modal.classList.add('open');
-    else modal.classList.remove('open');
+    if (show) {
+        modal.classList.add('open');
+    } else {
+        modal.classList.remove('open');
+    }
 }
 
 function toggleRewardModal(show) {
     const modal = document.getElementById('rewardModal');
-    if (show) modal.className = 'modal open';
-    else modal.className = 'modal';
+    if (show) {
+        modal.classList.add('open');
+    } else {
+        modal.classList.remove('open');
+    }
 }
 
 function checkWinState() {
+    const dropZone = document.getElementById('dropZone');
+    const placedWords = Array.from(dropZone.children).map(el => el.innerText);
+
+    // Must have all words placed
+    if (placedWords.length !== originalWordsArray.length) {
+        return;
+    }
+
+    // Exact match (order + spelling + punctuation)
+    const isCorrect = placedWords.every((word, index) => word === originalWordsArray[index]);
+
+    if (isCorrect) {
+        // Mark as mastered if it was a curriculum verse
+        if (currentActiveId !== null && !masteredVerses.includes(currentActiveId)) {
+            masteredVerses.push(currentActiveId);
+            localStorage.setItem('masteredScriptures', JSON.stringify(masteredVerses));
+        }
+
+        document.getElementById('successBlock').classList.remove('hidden');
+        document.getElementById('gameControls').classList.add('hidden');
+    }
+}
+
+function goToMainMenu() {
+    document.getElementById('gameView').classList.add('hidden');
+    document.getElementById('setupView').classList.remove('hidden');
+    document.getElementById('successBlock').classList.add('hidden');
+    currentActiveId = null;
+    renderCurriculum(); // refresh mastered status
+}
+
+function goToNextTrack() {
+    if (currentActiveId === null) {
+        goToMainMenu();
+        return;
+    }
+
+    const currentIndex = curriculumVerses.findIndex(v => v.id === currentActiveId);
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < curriculumVerses.length) {
+        startCurriculumVerse(curriculumVerses[nextIndex]);
+    } else {
+        // Finished the last track
+        goToMainMenu();
+        // Optionally open the reward if everything is done
+        const allCompleted = curriculumVerses.every(v => masteredVerses.includes(v.id));
+        if (allCompleted) {
+            setTimeout(() => toggleRewardModal(true), 400);
+        }
+    }
+}
+
+// ========== EVENT LISTENERS ==========
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial render
+    renderCurriculum();
+
+    // Translation change → re-render list
+    const versionSelect = document.getElementById('versionSelect');
+    if (versionSelect) {
+        versionSelect.addEventListener('change', () => {
+            renderCurriculum();
+        });
+    }
+
+    // Custom puzzle button
+    const generateBtn = document.getElementById('generateBtn');
+    if (generateBtn) {
+        generateBtn.addEventListener('click', () => {
+            currentActiveId = null; // custom verse
+            initGame();
+        });
+    }
+
+    // Hint button
+    const showHintBtn = document.getElementById('showHintBtn');
+    if (showHintBtn) {
+        showHintBtn.addEventListener('click', () => toggleHint(true));
+    }
+
+    // Close hint by clicking the text or the close button
+    const hintText = document.getElementById('hintText');
+    if (hintText) {
+        hintText.addEventListener('click', () => toggleHint(false));
+    }
+
+    const closeHintBtn = document.getElementById('closeHintBtn');
+    if (closeHintBtn) {
+        closeHintBtn.addEventListener('click', () => toggleHint(false));
+    }
+
+    // Main Menu button
+    const newVerseBtn = document.getElementById('newVerseBtn');
+    if (newVerseBtn) {
+        newVerseBtn.addEventListener('click', goToMainMenu);
+    }
+
+    // Success buttons
+    const nextTrackBtn = document.getElementById('nextTrackBtn');
+    if (nextTrackBtn) {
+        nextTrackBtn.addEventListener('click', goToNextTrack);
+    }
+
+    const backToDirBtn = document.getElementById('backToDirBtn');
+    if (backToDirBtn) {
+        backToDirBtn.addEventListener('click', goToMainMenu);
+    }
+
+    // Reward modal close
+    const closeRewardBtn = document.getElementById('closeRewardBtn');
+    if (closeRewardBtn) {
+        closeRewardBtn.addEventListener('click', () => toggleRewardModal(false));
+    }
+
+    // Close modals when clicking the dark background
+    document.getElementById('hintModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'hintModal') toggleHint(false);
+    });
+
+    document.getElementById('rewardModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'rewardModal') toggleRewardModal(false);
+    });
+});
