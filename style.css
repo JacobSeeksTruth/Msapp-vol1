@@ -10,6 +10,7 @@
     --light-bg: #f8fafc;
     --card-bg: #ffffff;
     --pool-bg: #e8eef4;
+    --link-blue: #2563eb;
 }
 
 body.dark-mode {
@@ -24,6 +25,7 @@ body.dark-mode {
     --light-bg: #1e293b;
     --card-bg: #1e293b;
     --pool-bg: #0f172a;
+    --link-blue: #60a5fa;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -56,9 +58,25 @@ body {
 }
 
 h1, h2 { text-align: center; color: var(--primary-color); margin-top: 0; }
-h1 { font-size: 22px; margin-bottom: 4px; font-weight: 700; }
-h2 { font-size: 15px; font-weight: 500; color: #718096; margin-bottom: 20px; }
-body.dark-mode h2 { color: #94a3b8; }
+h1 { font-size: 22px; margin-bottom: 6px; font-weight: 700; }
+
+.subtitle {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 20px;
+}
+.sub-line1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.sub-line2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #718096;
+}
+body.dark-mode .sub-line2 { color: #94a3b8; }
 
 .hidden { display: none !important; }
 
@@ -124,7 +142,6 @@ body.dark-mode h2 { color: #94a3b8; }
     font-size: 15px;
     min-height: 52px;
 }
-
 .verse-item:hover { background: var(--light-bg); }
 .verse-item.mastered { border-left: 5px solid var(--success-color); }
 
@@ -152,14 +169,12 @@ body.dark-mode .verse-item.mastered .status-badge { background: #064e3b; color: 
     line-height: 1.35;
     user-select: none;
 }
-
 .reward-item.locked {
     background: var(--light-bg);
     border: 1px dashed var(--border-color);
     color: #94a3b8;
     cursor: not-allowed;
 }
-
 .reward-item.unlocked {
     background: linear-gradient(135deg, #fef3c7, #fde68a);
     border: 2px solid #f59e0b;
@@ -170,6 +185,11 @@ body.dark-mode .verse-item.mastered .status-badge { background: #064e3b; color: 
 body.dark-mode .reward-item.unlocked {
     background: linear-gradient(135deg, #78350f, #92400e);
     color: #fde68a;
+}
+
+/* Blue title in unlocked state */
+.reward-item.unlocked .devotional-blue {
+    color: var(--link-blue);
 }
 
 .btn-options {
@@ -262,7 +282,6 @@ body.dark-mode .pool-title, body.dark-mode .drop-title { color: #94a3b8; }
     border: 2px dashed #94a3b8;
 }
 
-/* Puzzle pieces in the pool */
 .word-piece {
     background-color: var(--piece-color);
     border: 2px solid var(--border-color);
@@ -281,7 +300,7 @@ body.dark-mode .pool-title, body.dark-mode .drop-title { color: #94a3b8; }
 }
 .word-piece:active { transform: scale(0.94); }
 
-/* Streamlined text look when in Your Verse */
+/* Streamlined text look in Your Verse */
 .drop-zone .word-piece {
     background: transparent !important;
     border: none !important;
@@ -438,7 +457,7 @@ body.dark-mode .btn-dir { background: #475569 !important; color: #e2e8f0 !import
 }
 body.dark-mode .btn-close-modal { background: #334155 !important; }
 
-/* Options specific */
+/* Options */
 .options-content { text-align: left; }
 .options-content h3 { text-align: center; }
 .options-content h4 { margin: 12px 0 8px; color: var(--primary-color); }
@@ -494,12 +513,55 @@ textarea, input[type="text"] {
 input:checked + .slider { background-color: var(--accent-color); }
 input:checked + .slider:before { transform: translateX(24px); }
 
-/* Reward Modal */
-.reward-content h2 { color: var(--gold-color); margin-bottom: 10px; font-size: 19px; text-align: center; }
+/* Music Controls */
+.music-controls {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+.music-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    text-align: center;
+    color: var(--primary-color);
+}
+.music-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+.btn-music {
+    padding: 10px 6px !important;
+    font-size: 13px !important;
+    background: linear-gradient(135deg, #64748b, #475569) !important;
+}
+
+/* Reward / Devotional */
+.reward-content h2.devotional-title {
+    color: var(--link-blue) !important;
+    margin-bottom: 10px;
+    font-size: 19px;
+    text-align: center;
+}
 .reward-content .divider { height: 1px; background: var(--border-color); margin-bottom: 16px; }
 .reward-content .closing { font-weight: 600; color: var(--primary-color); text-align: left; margin-top: 18px; }
 
-/* Bible Study Menu */
+/* Clickable verse links in Devotional */
+.verse-link {
+    color: var(--link-blue);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.verse-link:hover {
+    opacity: 0.85;
+}
+
+/* Bible Study Main Menu */
 .bible-study-menu {
     margin-top: 24px;
     text-align: center;
@@ -527,9 +589,11 @@ body.dark-mode .text-link-btn { color: #94a3b8; }
     body { padding: 10px; }
     .container { padding: 14px; }
     h1 { font-size: 20px; }
-    h2 { font-size: 14px; }
+    .sub-line1 { font-size: 15px; }
+    .sub-line2 { font-size: 14px; }
     .word-piece { font-size: 15px; padding: 10px 13px; }
     .drop-zone .word-piece { font-size: 16px; }
     .insert-buttons { grid-template-columns: 1fr 1fr; }
     .btn-cancel-insert { grid-column: 1 / -1; }
+    .music-buttons { grid-template-columns: 1fr; }
 }
