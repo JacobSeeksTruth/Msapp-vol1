@@ -30,17 +30,10 @@
                 <div id="rewardContainer"></div>
             </div>
 
-            <div class="or-divider">— OR CHOOSE YOUR OWN —</div>
+            <!-- Options Button -->
+            <button id="optionsBtn" class="btn-options">Options</button>
 
-            <label class="field-label">Custom Verse Text:</label>
-            <textarea id="verseInput" placeholder="Type or paste any target verse here..."></textarea>
-            
-            <label class="field-label">Verse Reference:</label>
-            <input type="text" id="referenceInput" placeholder="e.g., John 3:16">
-            
-            <button id="generateBtn">Start Custom Puzzle</button>
-            
-            <!-- New Download Button -->
+            <!-- Download Study Guide -->
             <a id="downloadGuideBtn" class="btn-download" href="#" target="_blank" rel="noopener">
                 Download Full Study Guide
             </a>
@@ -57,7 +50,6 @@
             
             <div class="drop-title">Your Verse <span class="hint-text">(Tap to remove • Hold a card to insert before/after)</span></div>
             
-            <!-- Insert controls (shown only when a card is long-pressed) -->
             <div id="insertControls" class="insert-controls hidden">
                 <span class="insert-label">Insert relative to highlighted card:</span>
                 <div class="insert-buttons">
@@ -76,9 +68,45 @@
                 <span>🎉 Well done! You've perfectly completed the verse from memory!</span>
                 <div class="success-nav">
                     <button class="btn-next" id="nextTrackBtn">Next Track ➔</button>
-                    <button class="btn-dir" id="backToDirBtn">Back to Directory</button>
+                    <div class="success-second-row">
+                        <button class="btn-retry" id="retryBtn">Retry</button>
+                        <button class="btn-dir" id="backToDirBtn">Back to Directory</button>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Bible Study Menu (always at bottom) -->
+        <div class="bible-study-menu">
+            <a id="bibleStudyMenuBtn" href="#" class="text-link-btn">Bible Study Menu</a>
+        </div>
+    </div>
+
+    <!-- OPTIONS MODAL -->
+    <div id="optionsModal" class="modal">
+        <div class="modal-content options-content">
+            <h3>Options</h3>
+            
+            <div class="option-row">
+                <label for="darkModeToggle"><strong>Dark Mode</strong></label>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <h4>Custom Verse Puzzle</h4>
+            <label class="field-label">Custom Verse Text:</label>
+            <textarea id="verseInput" placeholder="Type or paste any target verse here..."></textarea>
+            
+            <label class="field-label">Verse Reference:</label>
+            <input type="text" id="referenceInput" placeholder="e.g., John 3:16">
+            
+            <button id="generateBtn">Start Custom Puzzle</button>
+
+            <button id="closeOptionsBtn" class="btn-close-modal" style="margin-top: 16px;">Close Options</button>
         </div>
     </div>
 
