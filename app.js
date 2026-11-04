@@ -71,6 +71,12 @@ const curriculumVerses = [
     }}
 ];
 
+// Quick lookup for ESV text by reference
+const esvLookup = {};
+curriculumVerses.forEach(v => {
+    esvLookup[v.ref] = v.translations.ESV;
+});
+
 let originalWordsArray = [];
 let currentVerseText = "";
 let currentReference = "";
@@ -81,6 +87,7 @@ let insertTarget = null;
 let insertPosition = null;
 let longPressTimer = null;
 let rewardLongPressTimer = null;
+let isMusicMuted = false;
 
 function getSelectedTranslation() {
     return document.getElementById('versionSelect')?.value || 'ESV';
@@ -114,12 +121,11 @@ function renderCurriculum() {
     
     if (isUnlocked) {
         rewardBtn.className = "reward-item unlocked";
-        rewardBtn.innerText = "Devotional: Walking in the Love of God Through Faithful Obedience (Unlocked)";
+        rewardBtn.innerHTML = `<span class="devotional-blue">Devotional: Walking in the Love of God Through Faithful Obedience</span> (Unlocked)`;
         rewardBtn.onclick = () => toggleRewardModal(true);
     } else {
         rewardBtn.className = "reward-item locked";
         rewardBtn.innerText = "Devotional: Walking in the Love of God Through Faithful Obedience (Locked)";
-        // Long-press to unlock
         rewardBtn.addEventListener('touchstart', startRewardLongPress, {passive: true});
         rewardBtn.addEventListener('mousedown', startRewardLongPress);
         rewardBtn.addEventListener('touchend', cancelRewardLongPress);
@@ -222,7 +228,6 @@ function createWordPiece(word) {
         checkWinState();
     });
 
-    // Long-press for insert
     el.addEventListener('touchstart', startLongPress, {passive: true});
     el.addEventListener('mousedown', startLongPress);
     el.addEventListener('touchend', cancelLongPress);
@@ -315,7 +320,6 @@ function goToNextTrack() {
 }
 
 function retryPuzzle() {
-    // Restart the same puzzle, keep mastered status
     initGame();
 }
 
@@ -336,14 +340,77 @@ function applyDarkMode(enabled) {
     localStorage.setItem('darkMode', enabled ? 'true' : 'false');
 }
 
+// ===== Music Controls =====
+function setupMusic() {
+    const audio = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicControls = document.getElementById('musicControls');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const restartBtn = document.getElementById('restartMusicBtn');
+    const muteBtn = document.getElementById('muteMusicBtn');
+
+    // Restore previous preference
+    const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
+    musicToggle.checked = musicEnabled;
+    if (musicEnabled) {
+        musicControls.classList.remove('hidden');
+    }
+
+    musicToggle.addEventListener('change', (e) => {
+        const enabled = e.target.checked;
+        localStorage.setItem('musicEnabled', enabled ? 'true' : 'false');
+        musicControls.classList.toggle('hidden', !enabled);
+        if (!enabled) {
+            audio.pause();
+            playPauseBtn.textContent = 'Play';
+        }
+    });
+
+    playPauseBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play().then(() => {
+                playPauseBtn.textContent = 'Pause';
+            }).catch(err => {
+                console.warn('Audio play failed:', err);
+                alert('Unable to play audio. Please try again or check browser settings.');
+            });
+        } else {
+            audio.pause();
+            playPauseBtn.textContent = 'Play';
+        }
+    });
+
+    restartBtn.addEventListener('click', () => {
+        audio.currentTime = 0;
+        audio.play().then(() => {
+            playPauseBtn.textContent = 'Pause';
+        }).catch(() => {});
+    });
+
+    muteBtn.addEventListener('click', () => {
+        isMusicMuted = !isMusicMuted;
+        audio.muted = isMusicMuted;
+        muteBtn.textContent = isMusicMuted ? 'Unmute' : 'Mute';
+    });
+}
+
+// Show ESV verse from Devotional links
+function showVerseFromLink(ref) {
+    const text = esvLookup[ref] || "Verse not found.";
+    document.getElementById('hintRef').innerText = ref + " (ESV)";
+    document.getElementById('hintText').innerText = text;
+    toggleHint(true);
+}
+
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Dark mode restore
+    // Dark mode
     const savedDark = localStorage.getItem('darkMode') === 'true';
     document.getElementById('darkModeToggle').checked = savedDark;
     applyDarkMode(savedDark);
 
     renderCurriculum();
+    setupMusic();
 
     document.getElementById('versionSelect')?.addEventListener('change', renderCurriculum);
 
@@ -354,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'optionsModal') toggleOptions(false);
     });
 
-    // Dark mode toggle
     document.getElementById('darkModeToggle')?.addEventListener('change', (e) => {
         applyDarkMode(e.target.checked);
     });
@@ -397,5 +463,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('rewardModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'rewardModal') toggleRewardModal(false);
+    });
+
+    // Clickable verse links in Devotional
+    document.querySelectorAll('.verse-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const ref = link.getAttribute('data-ref');
+            showVerseFromLink(ref);
+        });
     });
 });
