@@ -632,7 +632,7 @@ body.dark-mode .btn-expand-all {
     margin: 12px 0;
 }
 
-/* Hebrew / Greek headers */
+/* Hebrew / Greek / Aramaic headers */
 .lang-header {
     padding: 10px 12px;
     font-weight: 700;
@@ -643,12 +643,14 @@ body.dark-mode .btn-expand-all {
     text-align: center;
 }
 .hebrew-header,
-.greek-header {
+.greek-header,
+.aramaic-header {
     background: #dbeafe;
     color: #1e40af;
 }
 body.dark-mode .hebrew-header,
-body.dark-mode .greek-header {
+body.dark-mode .greek-header,
+body.dark-mode .aramaic-header {
     background: #1e3a5f;
     color: #93c5fd;
 }
@@ -691,12 +693,41 @@ body.dark-mode .verse-title {
     color: var(--text-color);
 }
 
+/* Sub-dropdowns (Word Breakdown & Untranslatable Word) */
+.sub-dropdown {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+}
+.sub-title {
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 4px 0;
+}
+.sub-body {
+    padding: 6px 0 4px 4px;
+    font-size: 13px;
+    line-height: 1.55;
+}
+.sub-body.hidden {
+    display: none;
+}
+.word-breakdown-list {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+.word-breakdown-list li {
+    margin-bottom: 4px;
+}
+
 /* Latest Updates */
 .updates-date {
     text-align: left;
     font-weight: 400;
     color: var(--text-color);
-    margin: 0;
+    margin: 0 0 6px;
 }
 
 /* Reset section */
