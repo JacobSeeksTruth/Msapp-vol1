@@ -46,7 +46,6 @@
         <div id="gameView" class="game-zone hidden">
             <div id="verseDisplayHeader" class="verse-header"></div>
             
-            <!-- Curriculum controls -->
             <div class="control-buttons" id="gameControls">
                 <button class="btn-hint" id="showHintBtn">💡 Look at Hint</button>
                 <button class="btn-back-main" id="newVerseBtn">Back to Main</button>
@@ -72,11 +71,9 @@
             <div class="pool-title">Scrambled Word Pieces <span class="hint-text">(Tap cards to pick)</span></div>
             <div id="wordPool" class="word-pool"></div>
             
-            <!-- Success block -->
             <div id="successBlock" class="success-message hidden">
                 <span>🎉 Well done! You've perfectly completed the verse from memory!</span>
                 
-                <!-- Curriculum success buttons -->
                 <div class="success-nav" id="curriculumSuccessNav">
                     <button class="btn-next" id="nextTrackBtn">Next Verse ➔</button>
                     <div class="success-second-row">
@@ -85,16 +82,13 @@
                     </div>
                 </div>
 
-                <!-- Custom success – only Retry -->
                 <div class="success-nav hidden" id="customSuccessNav">
                     <button class="btn-next" id="customRetryBtn">Retry</button>
                 </div>
             </div>
 
-            <!-- Status (curriculum only) -->
             <div id="puzzleStatus" class="puzzle-status">Status: Not Done</div>
 
-            <!-- Custom verse – Back to Options always at the very bottom -->
             <div id="customBottomBack" class="custom-bottom-back hidden">
                 <button class="btn-custom-back" id="customBackBtn">Back to Options</button>
             </div>
@@ -132,7 +126,7 @@
             <div class="options-section">
                 <div class="section-header" id="langToggleBtn">Alternative Translations ▾</div>
                 <div id="langContent" class="section-content hidden">
-                    <p class="lang-desc">Different Bible translations add crucial context missed in English. Wherever available, I’ve included original Hebrew or Greek insights to capture these deeper meanings.</p>
+                    <p class="lang-desc">Different Bible translations add crucial context missed in English. Wherever available, I’ve included original Hebrew, Greek, or Aramaic insights to capture these deeper meanings.</p>
                     
                     <div class="divider"></div>
                     <p class="instruction-text">Select drop-down to see verse translation.</p>
@@ -149,6 +143,29 @@
                                     <em>Bereshit bara Elohim et hashamayim ve-et ha-aretz</em><br><br>
                                     <strong>Literal:</strong> “In beginning created God the heavens and the earth.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>בְּרֵאשִׁית</strong> (bereshit) – in beginning</li>
+                                                <li><strong>בָּרָא</strong> (bara) – he created</li>
+                                                <li><strong>אֱלֹהִים</strong> (Elohim) – God</li>
+                                                <li><strong>אֵת</strong> (et) – (direct object marker)</li>
+                                                <li><strong>הַשָּׁמַיִם</strong> (hashamayim) – the heavens</li>
+                                                <li><strong>וְאֵת</strong> (ve-et) – and (object marker)</li>
+                                                <li><strong>הָאָרֶץ</strong> (ha-aretz) – the earth</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Untranslatable Word ▾</div>
+                                        <div class="sub-body hidden">
+                                            <p>When a single word carries so much cultural, emotional, or situational weight that it requires a sentence or an entire paragraph to explain in another language, linguists and translators use a few specific terms to describe what is happening.</p>
+                                            <p><strong>Example – אֵת (et):</strong> This Hebrew particle has no English equivalent. It marks the definite direct object and simply points to what is being acted upon. Leaving it out changes the grammar of the original.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -160,6 +177,19 @@
                                     <em>Betach el-YHWH bechol-libbecha ve-el-binatecha al-tishaen</em><br><br>
                                     <strong>Literal:</strong> “Trust in Yahweh with all your heart, and on your understanding do not lean.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>בְּטַח</strong> (betach) – trust / confide</li>
+                                                <li><strong>אֶל־יְהוָה</strong> (el-YHWH) – in / toward Yahweh</li>
+                                                <li><strong>בְּכָל־לִבֶּךָ</strong> (bechol-libbecha) – with all your heart</li>
+                                                <li><strong>וְאֶל־בִּינָתְךָ</strong> (ve-el-binatecha) – and on your understanding</li>
+                                                <li><strong>אַל־תִּשָּׁעֵן</strong> (al-tishaen) – do not lean / rely</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -171,6 +201,18 @@
                                     <em>YHWH ro’i lo echsar</em><br><br>
                                     <strong>Literal:</strong> “Yahweh is my shepherd; I shall not lack.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>יְהוָה</strong> (YHWH) – Yahweh (the LORD)</li>
+                                                <li><strong>רֹעִי</strong> (ro’i) – my shepherd</li>
+                                                <li><strong>לֹא</strong> (lo) – not</li>
+                                                <li><strong>אֶחְסָר</strong> (echsar) – I shall lack / want</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -182,6 +224,23 @@
                                     <em>Halo tziviti’cha chazak ve-ematz al-ta’arotz ve-al-techat ki imm’cha YHWH elohecha bechol asher telech</em><br><br>
                                     <strong>Literal:</strong> “Have I not commanded you? Be strong and courageous. Do not be afraid, and do not be dismayed, for Yahweh your God is with you wherever you go.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>הֲלֹוא</strong> (halo) – have I not?</li>
+                                                <li><strong>צִוִּיתִיךָ</strong> (tziviti’cha) – I commanded you</li>
+                                                <li><strong>חֲזַק</strong> (chazak) – be strong</li>
+                                                <li><strong>וֶאֱמָץ</strong> (ve-ematz) – and be courageous</li>
+                                                <li><strong>אַל־תַּעֲרֹץ</strong> (al-ta’arotz) – do not be terrified</li>
+                                                <li><strong>וְאַל־תֵּחָת</strong> (ve-al-techat) – and do not be dismayed</li>
+                                                <li><strong>כִּי עִמְּךָ</strong> (ki imm’cha) – for with you</li>
+                                                <li><strong>יְהוָה אֱלֹהֶיךָ</strong> (YHWH elohecha) – Yahweh your God</li>
+                                                <li><strong>בְּכֹל אֲשֶׁר תֵּלֵךְ</strong> (bechol asher telech) – in all that you go</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -199,6 +258,36 @@
                                     <em>Houtōs gar ēgapēsen ho Theos ton kosmon, hōste ton Huion ton monogenē edōken, hina pas ho pisteuōn eis auton mē apolētai all’ echē zōēn aiōnion.</em><br><br>
                                     <strong>Literal:</strong> “For thus God loved the world, that He gave the only-begotten Son, so that everyone believing in Him should not perish but have eternal life.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>Οὕτως</strong> (houtōs) – thus / in this way</li>
+                                                <li><strong>γὰρ</strong> (gar) – for</li>
+                                                <li><strong>ἠγάπησεν</strong> (ēgapēsen) – he loved (agapaō)</li>
+                                                <li><strong>ὁ Θεὸς</strong> (ho Theos) – God</li>
+                                                <li><strong>τὸν κόσμον</strong> (ton kosmon) – the world</li>
+                                                <li><strong>ὥστε</strong> (hōste) – so that</li>
+                                                <li><strong>τὸν Υἱὸν τὸν μονογενῆ</strong> (ton Huion ton monogenē) – the only-begotten Son</li>
+                                                <li><strong>ἔδωκεν</strong> (edōken) – he gave</li>
+                                                <li><strong>ἵνα</strong> (hina) – in order that</li>
+                                                <li><strong>πᾶς ὁ πιστεύων</strong> (pas ho pisteuōn) – everyone believing</li>
+                                                <li><strong>εἰς αὐτὸν</strong> (eis auton) – in him</li>
+                                                <li><strong>μὴ ἀπόληται</strong> (mē apolētai) – should not perish</li>
+                                                <li><strong>ἀλλ’ ἔχῃ</strong> (all’ echē) – but have</li>
+                                                <li><strong>ζωὴν αἰώνιον</strong> (zōēn aiōnion) – eternal life</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Untranslatable Word ▾</div>
+                                        <div class="sub-body hidden">
+                                            <p>When a single word carries so much cultural, emotional, or situational weight that it requires a sentence or an entire paragraph to explain in another language, linguists and translators use a few specific terms to describe what is happening.</p>
+                                            <p><strong>Example – ἀγάπη / ἀγαπάω (agapē / agapaō):</strong> Often rendered simply “love,” this word describes self-giving, covenantal, deliberate love that seeks the highest good of the other, independent of worthiness or emotion. English “love” is far too broad and thin to carry its full weight.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -210,6 +299,20 @@
                                     <em>Pantes gar hēmarton kai hysterountai tēs doxēs tou Theou</em><br><br>
                                     <strong>Literal:</strong> “For all sinned and fall short of the glory of God”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>πάντες</strong> (pantes) – all</li>
+                                                <li><strong>γὰρ</strong> (gar) – for</li>
+                                                <li><strong>ἥμαρτον</strong> (hēmarton) – sinned</li>
+                                                <li><strong>καὶ ὑστεροῦνται</strong> (kai hysterountai) – and fall short / lack</li>
+                                                <li><strong>τῆς δόξης</strong> (tēs doxēs) – of the glory</li>
+                                                <li><strong>τοῦ Θεοῦ</strong> (tou Theou) – of God</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -221,6 +324,22 @@
                                     <em>Ta gar opsōnia tēs hamartias thanatos, to de charisma tou Theou zōē aiōnios en Christō Iēsou tō Kyriō hēmōn.</em><br><br>
                                     <strong>Literal:</strong> “For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>τὰ ὀψώνια</strong> (ta opsōnia) – the wages / pay</li>
+                                                <li><strong>τῆς ἁμαρτίας</strong> (tēs hamartias) – of sin</li>
+                                                <li><strong>θάνατος</strong> (thanatos) – death</li>
+                                                <li><strong>τὸ χάρισμα</strong> (to charisma) – the free gift / grace-gift</li>
+                                                <li><strong>τοῦ Θεοῦ</strong> (tou Theou) – of God</li>
+                                                <li><strong>ζωὴ αἰώνιος</strong> (zōē aiōnios) – eternal life</li>
+                                                <li><strong>ἐν Χριστῷ Ἰησοῦ</strong> (en Christō Iēsou) – in Christ Jesus</li>
+                                                <li><strong>τῷ Κυρίῳ ἡμῶν</strong> (tō Kyriō hēmōn) – our Lord</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -232,6 +351,18 @@
                                     <em>Panta ischyō en tō endynamounti me</em><br><br>
                                     <strong>Literal:</strong> “I have strength for all things in the one strengthening me”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>πάντα</strong> (panta) – all things</li>
+                                                <li><strong>ἰσχύω</strong> (ischyō) – I am strong / have strength</li>
+                                                <li><strong>ἐν τῷ ἐνδυναμοῦντί</strong> (en tō endynamounti) – in the one empowering / strengthening</li>
+                                                <li><strong>με</strong> (me) – me</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -243,6 +374,20 @@
                                     <em>Oidamen de hoti tois agapōsin ton Theon panta synergei eis agathon, tois kata prothesin klētois ousin.</em><br><br>
                                     <strong>Literal:</strong> “We know that to those loving God all things work together for good, to those being called according to purpose.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>Οἴδαμεν</strong> (oidamen) – we know</li>
+                                                <li><strong>τοῖς ἀγαπῶσιν</strong> (tois agapōsin) – to those loving</li>
+                                                <li><strong>τὸν Θεὸν</strong> (ton Theon) – God</li>
+                                                <li><strong>πάντα συνεργεῖ</strong> (panta synergei) – all things work together</li>
+                                                <li><strong>εἰς ἀγαθόν</strong> (eis agathon) – for good</li>
+                                                <li><strong>τοῖς κατὰ πρόθεσιν κλητοῖς</strong> (tois kata prothesin klētois) – to those called according to purpose</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -254,6 +399,159 @@
                                     <em>Zēteite de prōton tēn basileian kai tēn dikaiosynēn autou, kai tauta panta prostethēsetai hymin.</em><br><br>
                                     <strong>Literal:</strong> “But seek first the kingdom and His righteousness, and all these things will be added to you.”
                                     <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ζητεῖτε</strong> (zēteite) – seek / keep seeking</li>
+                                                <li><strong>πρῶτον</strong> (prōton) – first</li>
+                                                <li><strong>τὴν βασιλείαν</strong> (tēn basileian) – the kingdom</li>
+                                                <li><strong>καὶ τὴν δικαιοσύνην αὐτοῦ</strong> (kai tēn dikaiosynēn autou) – and His righteousness</li>
+                                                <li><strong>ταῦτα πάντα</strong> (tauta panta) – all these things</li>
+                                                <li><strong>προστεθήσεται</strong> (prostethēsetai) – will be added</li>
+                                                <li><strong>ὑμῖν</strong> (hymin) – to you</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+
+                    <!-- Aramaic -->
+                    <div class="lang-subsection">
+                        <div class="lang-header aramaic-header" id="aramaicToggleBtn">Aramaic ▾</div>
+                        <div id="aramaicContent" class="lang-subcontent hidden">
+                            <div class="verse-dropdown" data-ref="Genesis 1:1">
+                                <div class="verse-title" data-verse-toggle>Genesis 1:1 ▾</div>
+                                <div class="verse-body hidden">
+                                    <span class="orig">ܒܪܫܝܬ ܒܪܐ ܐܠܗܐ ܝܬ ܫܡܝܐ ܘܝܬ ܐܪܥܐ</span><br>
+                                    <em>Breshit bara Alaha yat shmaya w-yat ar’a</em><br><br>
+                                    <strong>Literal:</strong> “In the beginning God created the heavens and the earth.”
+                                    <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ܒܪܫܝܬ</strong> (breshit) – in the beginning / origin</li>
+                                                <li><strong>ܒܪܐ</strong> (bara) – created</li>
+                                                <li><strong>ܐܠܗܐ</strong> (Alaha) – God</li>
+                                                <li><strong>ܝܬ</strong> (yat) – (object marker)</li>
+                                                <li><strong>ܫܡܝܐ</strong> (shmaya) – the heavens</li>
+                                                <li><strong>ܘܝܬ</strong> (w-yat) – and (object marker)</li>
+                                                <li><strong>ܐܪܥܐ</strong> (ar’a) – the earth</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+
+                            <div class="verse-dropdown" data-ref="Psalm 23:1">
+                                <div class="verse-title" data-verse-toggle>Psalm 23:1 ▾</div>
+                                <div class="verse-body hidden">
+                                    <span class="orig">ܡܪܝܐ ܢܪܥܝܢܝ ܘܡܕܡ ܠܐ ܢܚܣܪ ܠܝ</span><br>
+                                    <em>Marya nra’yani w-medem la nechsar li</em><br><br>
+                                    <strong>Literal:</strong> “The Lord shepherds me and nothing shall be lacking to me.”
+                                    <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ܡܪܝܐ</strong> (Marya) – the Lord (Yahweh)</li>
+                                                <li><strong>ܢܪܥܝܢܝ</strong> (nra’yani) – he shepherds me</li>
+                                                <li><strong>ܘܡܕܡ</strong> (w-medem) – and anything / nothing</li>
+                                                <li><strong>ܠܐ ܢܚܣܪ</strong> (la nechsar) – shall not lack</li>
+                                                <li><strong>ܠܝ</strong> (li) – to me</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+
+                            <div class="verse-dropdown" data-ref="John 3:16">
+                                <div class="verse-title" data-verse-toggle>John 3:16 ▾</div>
+                                <div class="verse-body hidden">
+                                    <span class="orig">ܗܟܢܐ ܓܝܪ ܐܚܒ ܐܠܗܐ ܠܥܠܡܐ ܐܝܟܢܐ ܕܠܒܪܗ ܝܚܝܕܝܐ ܢܬܠ ܕܟܠ ܡܢ ܕܡܗܝܡܢ ܒܗ ܠܐ ܢܐܒܕ ܐܠܐ ܢܗܘܘܢ ܠܗ ܚܝܐ ܕܠܥܠܡ</span><br>
+                                    <em>Hakana gir ahev Alaha l-’alma aykana d-labreh yechidaya netel d-kol man d-mhaimen beh la nebad ela nehwun leh chaye d-l-’alam</em><br><br>
+                                    <strong>Literal:</strong> “For thus God loved the world, that He would give His only Son, so that everyone who believes in Him should not perish but have life that is forever.”
+                                    <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ܗܟܢܐ</strong> (hakana) – thus / in this way</li>
+                                                <li><strong>ܓܝܪ</strong> (gir) – for</li>
+                                                <li><strong>ܐܚܒ</strong> (ahev) – he loved</li>
+                                                <li><strong>ܐܠܗܐ</strong> (Alaha) – God</li>
+                                                <li><strong>ܠܥܠܡܐ</strong> (l-’alma) – the world</li>
+                                                <li><strong>ܠܒܪܗ ܝܚܝܕܝܐ</strong> (labreh yechidaya) – His only / unique Son</li>
+                                                <li><strong>ܢܬܠ</strong> (netel) – He would give</li>
+                                                <li><strong>ܕܟܠ ܡܢ ܕܡܗܝܡܢ</strong> (d-kol man d-mhaimen) – that everyone who believes</li>
+                                                <li><strong>ܒܗ</strong> (beh) – in Him</li>
+                                                <li><strong>ܠܐ ܢܐܒܕ</strong> (la nebad) – should not perish</li>
+                                                <li><strong>ܐܠܐ ܢܗܘܘܢ ܠܗ</strong> (ela nehwun leh) – but there would be to him</li>
+                                                <li><strong>ܚܝܐ ܕܠܥܠܡ</strong> (chaye d-l-’alam) – life that is forever</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+
+                            <div class="verse-dropdown" data-ref="Romans 3:23">
+                                <div class="verse-title" data-verse-toggle>Romans 3:23 ▾</div>
+                                <div class="verse-body hidden">
+                                    <span class="orig">ܡܛܠ ܕܟܠܗܘܢ ܚܛܘ ܘܚܤܝܪܝܢ ܡܢ ܬܫܒܘܚܬܗ ܕܐܠܗܐ</span><br>
+                                    <em>Metul d-kulhun chetu w-chasirin men teshbuchteh d-Alaha</em><br><br>
+                                    <strong>Literal:</strong> “Because all of them have sinned and are lacking from the glory of God.”
+                                    <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ܡܛܠ</strong> (metul) – because</li>
+                                                <li><strong>ܕܟܠܗܘܢ</strong> (d-kulhun) – that all of them</li>
+                                                <li><strong>ܚܛܘ</strong> (chetu) – have sinned</li>
+                                                <li><strong>ܘܚܤܝܪܝܢ</strong> (w-chasirin) – and are lacking / deficient</li>
+                                                <li><strong>ܡܢ ܬܫܒܘܚܬܗ</strong> (men teshbuchteh) – from His glory</li>
+                                                <li><strong>ܕܐܠܗܐ</strong> (d-Alaha) – of God</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+
+                            <div class="verse-dropdown" data-ref="Romans 6:23">
+                                <div class="verse-title" data-verse-toggle>Romans 6:23 ▾</div>
+                                <div class="verse-body hidden">
+                                    <span class="orig">ܬܐܓܘܪܬܐ ܕܝܢ ܕܚܛܝܬܐ ܡܘܬܐ ܗܘ ܘܡܘܗܒܬܗ ܕܐܠܗܐ ܚܝܐ ܕܠܥܠܡ ܒܡܪܢ ܝܫܘܥ ܡܫܝܚܐ</span><br>
+                                    <em>Tagurta den d-chatitha mawta hu w-mawhabteh d-Alaha chaye d-l-’alam b-Maran Yeshua Meshicha</em><br><br>
+                                    <strong>Literal:</strong> “For the wages of sin is death, and the gift of God is life that is forever in our Lord Jesus the Messiah.”
+                                    <div class="english-line"></div>
+
+                                    <div class="sub-dropdown">
+                                        <div class="sub-title" data-sub-toggle>Word Breakdown ▾</div>
+                                        <div class="sub-body hidden">
+                                            <ul class="word-breakdown-list">
+                                                <li><strong>ܬܐܓܘܪܬܐ</strong> (tagurta) – wages / pay</li>
+                                                <li><strong>ܕܚܛܝܬܐ</strong> (d-chatitha) – of sin</li>
+                                                <li><strong>ܡܘܬܐ</strong> (mawta) – death</li>
+                                                <li><strong>ܘܡܘܗܒܬܗ</strong> (w-mawhabteh) – and His gift</li>
+                                                <li><strong>ܕܐܠܗܐ</strong> (d-Alaha) – of God</li>
+                                                <li><strong>ܚܝܐ ܕܠܥܠܡ</strong> (chaye d-l-’alam) – life that is forever</li>
+                                                <li><strong>ܒܡܪܢ ܝܫܘܥ ܡܫܝܚܐ</strong> (b-Maran Yeshua Meshicha) – in our Lord Jesus the Messiah</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -292,7 +590,8 @@
             <div class="options-section">
                 <div class="section-header" id="updatesToggleBtn">Latest Updates ▾</div>
                 <div id="updatesContent" class="section-content hidden">
-                    <p class="updates-date">Published on 11/5/2026</p>
+                    <p class="updates-date">11/5/2026: Published</p>
+                    <p class="updates-date">11/8/2026: Aramaic added</p>
                 </div>
             </div>
 
