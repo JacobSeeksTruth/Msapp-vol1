@@ -575,31 +575,45 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('resetContent').classList.toggle('hidden');
     });
 
-    // Hebrew / Greek / Aramaic
-    document.getElementById('hebrewToggleBtn')?.addEventListener('click', () => {
-        document.getElementById('hebrewContent').classList.toggle('hidden');
-    });
-    document.getElementById('greekToggleBtn')?.addEventListener('click', () => {
-        document.getElementById('greekContent').classList.toggle('hidden');
-    });
-    document.getElementById('aramaicToggleBtn')?.addEventListener('click', () => {
-        document.getElementById('aramaicContent').classList.toggle('hidden');
-    });
+    // ===== Robust dropdown handling (event delegation) =====
+    document.getElementById('langContent')?.addEventListener('click', (e) => {
+        const target = e.target;
 
-    // Individual verses
-    document.querySelectorAll('[data-verse-toggle]').forEach(title => {
-        title.addEventListener('click', () => {
-            const body = title.nextElementSibling;
-            if (body) body.classList.toggle('hidden');
-        });
-    });
+        // Language headers (Hebrew / Greek / Aramaic)
+        if (target.id === 'hebrewToggleBtn' || target.closest('#hebrewToggleBtn')) {
+            document.getElementById('hebrewContent')?.classList.toggle('hidden');
+            return;
+        }
+        if (target.id === 'greekToggleBtn' || target.closest('#greekToggleBtn')) {
+            document.getElementById('greekContent')?.classList.toggle('hidden');
+            return;
+        }
+        if (target.id === 'aramaicToggleBtn' || target.closest('#aramaicToggleBtn')) {
+            document.getElementById('aramaicContent')?.classList.toggle('hidden');
+            return;
+        }
 
-    // Word Breakdown & Untranslatable Word sub-dropdowns
-    document.querySelectorAll('[data-sub-toggle]').forEach(title => {
-        title.addEventListener('click', () => {
-            const body = title.nextElementSibling;
-            if (body) body.classList.toggle('hidden');
-        });
+        // Verse titles (e.g. “Genesis 1:1 ▾”)
+        const verseToggle = target.closest('[data-verse-toggle]');
+        if (verseToggle) {
+            e.stopPropagation();
+            const body = verseToggle.nextElementSibling;
+            if (body && body.classList.contains('verse-body')) {
+                body.classList.toggle('hidden');
+            }
+            return;
+        }
+
+        // Word Breakdown & Untranslatable Word
+        const subToggle = target.closest('[data-sub-toggle]');
+        if (subToggle) {
+            e.stopPropagation();
+            const body = subToggle.nextElementSibling;
+            if (body && body.classList.contains('sub-body')) {
+                body.classList.toggle('hidden');
+            }
+            return;
+        }
     });
 
     // Expand / Collapse
