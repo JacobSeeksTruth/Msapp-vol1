@@ -71,11 +71,18 @@ const curriculumVerses = [
     }}
 ];
 
-// Quick lookup for ESV text by reference
-const esvLookup = {};
-curriculumVerses.forEach(v => {
-    esvLookup[v.ref] = v.translations.ESV;
-});
+const hintPhrases = {
+    "Genesis 1:1": "In the beginning",
+    "John 3:16": "He gave his only Son",
+    "Proverbs 3:5": "Trust in the LORD",
+    "Romans 3:23": "All have sinned",
+    "Romans 6:23": "Wages of sin",
+    "Philippians 4:13": "I can do all things",
+    "Psalm 23:1": "My shepherd",
+    "Romans 8:28": "Those who love God",
+    "Joshua 1:9": "Be strong and courageous",
+    "Matthew 6:33": "Seek the kingdom"
+};
 
 let originalWordsArray = [];
 let currentVerseText = "";
@@ -88,9 +95,39 @@ let insertPosition = null;
 let longPressTimer = null;
 let rewardLongPressTimer = null;
 let isMusicMuted = false;
+let allExpanded = false;
 
 function getSelectedTranslation() {
     return document.getElementById('versionSelect')?.value || 'ESV';
+}
+
+function updateEnglishLines() {
+    const t = getSelectedTranslation();
+    document.querySelectorAll('.verse-dropdown').forEach(dropdown => {
+        const ref = dropdown.getAttribute('data-ref');
+        const verseObj = curriculumVerses.find(v => v.ref === ref);
+        const englishEl = dropdown.querySelector('.english-line');
+        if (verseObj && englishEl && verseObj.translations[t]) {
+            englishEl.innerHTML = `<br><strong>English (${t}):</strong> ${verseObj.translations[t]}`;
+        }
+    });
+}
+
+function setExpandAllState(expanded) {
+    allExpanded = expanded;
+    const topBtn = document.getElementById('expandAllTop');
+    const bottomBtn = document.getElementById('expandAllBottom');
+    if (topBtn) topBtn.textContent = expanded ? 'Collapse ▾' : 'Expand ▾';
+    if (bottomBtn) bottomBtn.textContent = expanded ? 'Collapse ▾' : 'Expand ▾';
+
+    const hebrewContent = document.getElementById('hebrewContent');
+    const greekContent = document.getElementById('greekContent');
+    if (hebrewContent) hebrewContent.classList.toggle('hidden', !expanded);
+    if (greekContent) greekContent.classList.toggle('hidden', !expanded);
+
+    document.querySelectorAll('.verse-body').forEach(body => {
+        body.classList.toggle('hidden', !expanded);
+    });
 }
 
 function renderCurriculum() {
@@ -133,9 +170,11 @@ function renderCurriculum() {
         rewardBtn.addEventListener('mouseleave', cancelRewardLongPress);
     }
     rewardContainer.appendChild(rewardBtn);
+
+    updateEnglishLines();
 }
 
-function startRewardLongPress(e) {
+function startRewardLongPress() {
     cancelRewardLongPress();
     rewardLongPressTimer = setTimeout(() => {
         forceUnlocked = true;
@@ -166,6 +205,27 @@ function clearInsertMode() {
     insertTarget = null;
     insertPosition = null;
     document.getElementById('insertControls')?.classList.add('hidden');
+    // clear outlines
+    document.getElementById('insertBeforeBtn').style.outline = 'none';
+    document.getElementById('insertAfterBtn').style.outline = 'none';
+}
+
+function updatePuzzleStatus() {
+    const statusEl = document.getElementById('puzzleStatus');
+    const customBottom = document.getElementById('customBottomBack');
+    if (!statusEl) return;
+
+    if (currentActiveId === null) {
+        statusEl.classList.add('hidden');
+        if (customBottom) customBottom.classList.remove('hidden');
+        return;
+    }
+
+    statusEl.classList.remove('hidden');
+    if (customBottom) customBottom.classList.add('hidden');
+    const isMastered = masteredVerses.includes(currentActiveId);
+    statusEl.textContent = isMastered ? "Status: Mastered" : "Status: Not Done";
+    statusEl.classList.toggle('mastered', isMastered);
 }
 
 function initGame() {
@@ -183,8 +243,16 @@ function initGame() {
     originalWordsArray = currentVerseText.split(/\s+/).filter(w => w.length > 0);
 
     document.getElementById('verseDisplayHeader').innerText = currentReference;
+
+    const cleanRef = currentReference.split('(')[0].trim();
     document.getElementById('hintRef').innerText = currentReference;
+    document.getElementById('hintPhrase').innerText = hintPhrases[cleanRef] || "Remember the key phrase...";
     document.getElementById('hintText').innerText = currentVerseText;
+    document.getElementById('hintText').classList.add('hidden');
+
+    const seeBtn = document.getElementById('seeFullVerseBtn');
+    seeBtn.textContent = "See Full Verse";
+    seeBtn.classList.remove('hide-mode');
 
     const wordPool = document.getElementById('wordPool');
     const dropZone = document.getElementById('dropZone');
@@ -192,7 +260,12 @@ function initGame() {
     dropZone.innerHTML = "";
     
     document.getElementById('successBlock').classList.add('hidden');
-    document.getElementById('gameControls').classList.remove('hidden');
+
+    const isCustom = currentActiveId === null;
+
+    document.getElementById('gameControls').classList.toggle('hidden', isCustom);
+    document.getElementById('curriculumSuccessNav').classList.toggle('hidden', isCustom);
+    document.getElementById('customSuccessNav').classList.toggle('hidden', !isCustom);
 
     let indexedWords = originalWordsArray.map((word, index) => ({ word, index }));
     for (let i = indexedWords.length - 1; i > 0; i--) {
@@ -203,6 +276,8 @@ function initGame() {
     indexedWords.forEach(item => {
         wordPool.appendChild(createWordPiece(item.word));
     });
+
+    updatePuzzleStatus();
 
     document.getElementById('setupView').classList.add('hidden');
     document.getElementById('gameView').classList.remove('hidden');
@@ -235,7 +310,7 @@ function createWordPiece(word) {
     el.addEventListener('mouseleave', cancelLongPress);
     el.addEventListener('touchmove', cancelLongPress);
 
-    function startLongPress(e) {
+    function startLongPress() {
         if (el.parentElement.id !== 'dropZone') return;
         cancelLongPress();
         longPressTimer = setTimeout(() => {
@@ -273,6 +348,22 @@ function performInsert(poolPiece) {
     checkWinState();
 }
 
+function moveSelectedWord(direction) {
+    if (!insertTarget) return;
+    const dropZone = document.getElementById('dropZone');
+    const children = Array.from(dropZone.children);
+    const index = children.indexOf(insertTarget);
+    if (index === -1) return;
+
+    if (direction === 'left' && index > 0) {
+        dropZone.insertBefore(insertTarget, children[index - 1]);
+    } else if (direction === 'right' && index < children.length - 1) {
+        dropZone.insertBefore(children[index + 1], insertTarget);
+    }
+    // keep the panel open and the highlight
+    checkWinState();
+}
+
 function checkWinState() {
     const dropZone = document.getElementById('dropZone');
     const placedWords = Array.from(dropZone.children).map(el => el.innerText);
@@ -288,6 +379,7 @@ function checkWinState() {
         }
         document.getElementById('successBlock').classList.remove('hidden');
         document.getElementById('gameControls').classList.add('hidden');
+        updatePuzzleStatus();
         clearInsertMode();
     }
 }
@@ -301,6 +393,16 @@ function goToMainMenu() {
     renderCurriculum();
 }
 
+function goToOptionsFromCustom() {
+    clearInsertMode();
+    document.getElementById('gameView').classList.add('hidden');
+    document.getElementById('setupView').classList.remove('hidden');
+    document.getElementById('successBlock').classList.add('hidden');
+    currentActiveId = null;
+    toggleOptions(true);
+    document.getElementById('customVerseContent').classList.remove('hidden');
+}
+
 function goToNextTrack() {
     if (currentActiveId === null) {
         goToMainMenu();
@@ -312,8 +414,7 @@ function goToNextTrack() {
         startCurriculumVerse(curriculumVerses[nextIndex]);
     } else {
         goToMainMenu();
-        const allCompleted = curriculumVerses.every(v => masteredVerses.includes(v.id));
-        if (allCompleted || forceUnlocked) {
+        if (curriculumVerses.every(v => masteredVerses.includes(v.id)) || forceUnlocked) {
             setTimeout(() => toggleRewardModal(true), 400);
         }
     }
@@ -329,6 +430,10 @@ function toggleHint(show) {
 
 function toggleRewardModal(show) {
     document.getElementById('rewardModal').classList.toggle('open', show);
+    if (!show) {
+        document.getElementById('devotionalVerseSelect').value = "";
+        document.getElementById('devotionalVerseDisplay').classList.add('hidden');
+    }
 }
 
 function toggleOptions(show) {
@@ -338,45 +443,53 @@ function toggleOptions(show) {
 function applyDarkMode(enabled) {
     document.body.classList.toggle('dark-mode', enabled);
     localStorage.setItem('darkMode', enabled ? 'true' : 'false');
+
+    // Update the label text
+    const label = document.getElementById('modeLabel');
+    if (label) {
+        label.textContent = enabled ? 'Light Mode' : 'Night Mode';
+    }
 }
 
-// ===== Music Controls =====
+function resetAllProgress() {
+    if (!confirm("Are you sure you want to reset all Mastered verses and lock the Devotional again?")) return;
+
+    masteredVerses = [];
+    forceUnlocked = false;
+    localStorage.setItem('masteredScriptures', JSON.stringify([]));
+    localStorage.setItem('forceUnlockedDevotional', 'false');
+    renderCurriculum();
+    alert("All progress has been reset.");
+}
+
 function setupMusic() {
     const audio = document.getElementById('bgMusic');
-    const musicToggle = document.getElementById('musicToggle');
-    const musicControls = document.getElementById('musicControls');
+    const source = document.getElementById('audioSource');
     const playPauseBtn = document.getElementById('playPauseBtn');
     const restartBtn = document.getElementById('restartMusicBtn');
     const muteBtn = document.getElementById('muteMusicBtn');
+    const selectSongBtn = document.getElementById('selectSongBtn');
+    const songSelectModal = document.getElementById('songSelectModal');
+    const closeSongSelectBtn = document.getElementById('closeSongSelectBtn');
+    const currentSongTitle = document.getElementById('currentSongTitle');
 
-    // Restore previous preference
-    const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
-    musicToggle.checked = musicEnabled;
-    if (musicEnabled) {
-        musicControls.classList.remove('hidden');
-    }
-
-    musicToggle.addEventListener('change', (e) => {
-        const enabled = e.target.checked;
-        localStorage.setItem('musicEnabled', enabled ? 'true' : 'false');
-        musicControls.classList.toggle('hidden', !enabled);
-        if (!enabled) {
-            audio.pause();
-            playPauseBtn.textContent = 'Play';
-        }
-    });
+    audio.pause();
+    audio.currentTime = 0;
 
     playPauseBtn.addEventListener('click', () => {
         if (audio.paused) {
             audio.play().then(() => {
                 playPauseBtn.textContent = 'Pause';
-            }).catch(err => {
-                console.warn('Audio play failed:', err);
-                alert('Unable to play audio. Please try again or check browser settings.');
+                playPauseBtn.classList.remove('btn-play');
+                playPauseBtn.classList.add('btn-pause');
+            }).catch(() => {
+                alert('Unable to play audio. Please try again or select a different song.');
             });
         } else {
             audio.pause();
             playPauseBtn.textContent = 'Play';
+            playPauseBtn.classList.remove('btn-pause');
+            playPauseBtn.classList.add('btn-play');
         }
     });
 
@@ -384,6 +497,8 @@ function setupMusic() {
         audio.currentTime = 0;
         audio.play().then(() => {
             playPauseBtn.textContent = 'Pause';
+            playPauseBtn.classList.remove('btn-play');
+            playPauseBtn.classList.add('btn-pause');
         }).catch(() => {});
     });
 
@@ -392,46 +507,121 @@ function setupMusic() {
         audio.muted = isMusicMuted;
         muteBtn.textContent = isMusicMuted ? 'Unmute' : 'Mute';
     });
+
+    selectSongBtn.addEventListener('click', () => {
+        songSelectModal.classList.add('open');
+    });
+
+    closeSongSelectBtn.addEventListener('click', () => {
+        songSelectModal.classList.remove('open');
+    });
+
+    songSelectModal.addEventListener('click', (e) => {
+        if (e.target === songSelectModal) songSelectModal.classList.remove('open');
+    });
+
+    document.querySelectorAll('.song-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const newSrc = btn.getAttribute('data-src');
+            const newTitle = btn.getAttribute('data-title');
+            
+            audio.pause();
+            source.src = newSrc;
+            audio.load();
+            currentSongTitle.textContent = newTitle;
+            
+            playPauseBtn.textContent = 'Play';
+            playPauseBtn.classList.remove('btn-pause');
+            playPauseBtn.classList.add('btn-play');
+            
+            songSelectModal.classList.remove('open');
+        });
+    });
 }
 
-// Show ESV verse from Devotional links
-function showVerseFromLink(ref) {
-    const text = esvLookup[ref] || "Verse not found.";
-    document.getElementById('hintRef').innerText = ref + " (ESV)";
-    document.getElementById('hintText').innerText = text;
-    toggleHint(true);
-}
-
-// ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Dark mode
     const savedDark = localStorage.getItem('darkMode') === 'true';
     document.getElementById('darkModeToggle').checked = savedDark;
     applyDarkMode(savedDark);
 
     renderCurriculum();
     setupMusic();
+    updateEnglishLines();
 
-    document.getElementById('versionSelect')?.addEventListener('change', renderCurriculum);
+    document.getElementById('versionSelect')?.addEventListener('change', () => {
+        renderCurriculum();
+        updateEnglishLines();
+    });
 
-    // Options
     document.getElementById('optionsBtn')?.addEventListener('click', () => toggleOptions(true));
     document.getElementById('closeOptionsBtn')?.addEventListener('click', () => toggleOptions(false));
     document.getElementById('optionsModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'optionsModal') toggleOptions(false);
     });
 
+    // Section toggles
+    document.getElementById('customVerseToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('customVerseContent').classList.toggle('hidden');
+    });
+    document.getElementById('langToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('langContent').classList.toggle('hidden');
+    });
+    document.getElementById('musicSectionToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('musicSectionContent').classList.toggle('hidden');
+    });
+    document.getElementById('updatesToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('updatesContent').classList.toggle('hidden');
+    });
+    document.getElementById('resetToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('resetContent').classList.toggle('hidden');
+    });
+
+    // Hebrew / Greek
+    document.getElementById('hebrewToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('hebrewContent').classList.toggle('hidden');
+    });
+    document.getElementById('greekToggleBtn')?.addEventListener('click', () => {
+        document.getElementById('greekContent').classList.toggle('hidden');
+    });
+
+    // Individual verses
+    document.querySelectorAll('[data-verse-toggle]').forEach(title => {
+        title.addEventListener('click', () => {
+            const body = title.nextElementSibling;
+            if (body) body.classList.toggle('hidden');
+        });
+    });
+
+    // Expand / Collapse
+    document.getElementById('expandAllTop')?.addEventListener('click', () => {
+        setExpandAllState(!allExpanded);
+    });
+    document.getElementById('expandAllBottom')?.addEventListener('click', () => {
+        setExpandAllState(!allExpanded);
+    });
+
+    // Reset
+    document.getElementById('resetProgressBtn')?.addEventListener('click', resetAllProgress);
+    document.getElementById('devotionalHintToggle')?.addEventListener('click', () => {
+        document.getElementById('devotionalHintContent').classList.toggle('hidden');
+    });
+
     document.getElementById('darkModeToggle')?.addEventListener('change', (e) => {
         applyDarkMode(e.target.checked);
     });
 
-    // Custom puzzle
     document.getElementById('generateBtn')?.addEventListener('click', () => {
         currentActiveId = null;
         initGame();
     });
 
-    // Insert controls
+    // Custom Back button
+    document.getElementById('customBackBtn')?.addEventListener('click', goToOptionsFromCustom);
+
+    // Custom Retry
+    document.getElementById('customRetryBtn')?.addEventListener('click', retryPuzzle);
+
+    // Insert / Move controls
     document.getElementById('insertBeforeBtn')?.addEventListener('click', () => {
         insertPosition = 'before';
         document.getElementById('insertBeforeBtn').style.outline = '2px solid #0369a1';
@@ -444,33 +634,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('cancelInsertBtn')?.addEventListener('click', clearInsertMode);
 
-    // Game controls
+    document.getElementById('moveLeftBtn')?.addEventListener('click', () => moveSelectedWord('left'));
+    document.getElementById('moveRightBtn')?.addEventListener('click', () => moveSelectedWord('right'));
+
     document.getElementById('showHintBtn')?.addEventListener('click', () => toggleHint(true));
     document.getElementById('closeHintBtn')?.addEventListener('click', () => toggleHint(false));
-    document.getElementById('hintText')?.addEventListener('click', () => toggleHint(false));
     document.getElementById('newVerseBtn')?.addEventListener('click', goToMainMenu);
 
-    // Success buttons
+    document.getElementById('seeFullVerseBtn')?.addEventListener('click', () => {
+        const full = document.getElementById('hintText');
+        const btn = document.getElementById('seeFullVerseBtn');
+        
+        if (full.classList.contains('hidden')) {
+            full.classList.remove('hidden');
+            btn.textContent = "Hide Full Verse";
+            btn.classList.add('hide-mode');
+        } else {
+            full.classList.add('hidden');
+            btn.textContent = "See Full Verse";
+            btn.classList.remove('hide-mode');
+        }
+    });
+
     document.getElementById('nextTrackBtn')?.addEventListener('click', goToNextTrack);
     document.getElementById('retryBtn')?.addEventListener('click', retryPuzzle);
     document.getElementById('backToDirBtn')?.addEventListener('click', goToMainMenu);
 
     document.getElementById('closeRewardBtn')?.addEventListener('click', () => toggleRewardModal(false));
 
-    // Modal background close
+    document.getElementById('devotionalVerseSelect')?.addEventListener('change', (e) => {
+        const ref = e.target.value;
+        const display = document.getElementById('devotionalVerseDisplay');
+        if (ref) {
+            const verseObj = curriculumVerses.find(v => v.ref === ref);
+            const t = getSelectedTranslation();
+            if (verseObj && verseObj.translations[t]) {
+                display.innerHTML = `<strong>${ref} (${t})</strong><br>${verseObj.translations[t]}`;
+                display.classList.remove('hidden');
+            }
+        } else {
+            display.classList.add('hidden');
+        }
+    });
+
     document.getElementById('hintModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'hintModal') toggleHint(false);
     });
     document.getElementById('rewardModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'rewardModal') toggleRewardModal(false);
-    });
-
-    // Clickable verse links in Devotional
-    document.querySelectorAll('.verse-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const ref = link.getAttribute('data-ref');
-            showVerseFromLink(ref);
-        });
     });
 });
